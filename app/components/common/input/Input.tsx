@@ -5,6 +5,8 @@ interface InputPropsI {
   placeholder?: string;
   name?: string;
   type?: HTMLInputTypeAttribute;
+  onChange: (e: any) => void;
+  value?: string;
 }
 
 export default function Input({
@@ -12,10 +14,19 @@ export default function Input({
   placeholder,
   name,
   type,
+  onChange,
+  value,
 }: InputPropsI) {
   return (
     <>
-      <input className={className} placeholder={placeholder} type={type} />
+      <input
+        className={className}
+        placeholder={placeholder}
+        type={type}
+        onChange={onChange}
+        name={name}
+        value={value}
+      />
     </>
   );
 }

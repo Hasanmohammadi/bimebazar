@@ -31,12 +31,26 @@ export default function Address() {
 
   return (
     <>
+      <div className="mt-10">
+        <p className="font-semibold text-base">آدرس جهت درج روی بیمه‌نامه</p>
+        <div className="mt-2 border-t border-t-gray-300 pt-4">
+          {!address.id ? (
+            <p className="font-normal text-sm">
+              لطفا آدرسی را که می‌خواهید روی بیمه‌نامه درج شود، وارد کنید.
+            </p>
+          ) : (
+            <p className="font-medium text-sm">{address.name}</p>
+          )}
+        </div>
+      </div>
       <button
+        type="button"
         onClick={() => setIsOpen(true)}
         className="w-full py-3 font-semibold text-base mt-9 bg-primary"
       >
         انتخاب از آدرس‌های من
       </button>
+
       <BottomSheet
         open={isOpen}
         onClose={() => {
@@ -75,6 +89,7 @@ export default function Address() {
           {isOpen && (
             <div className="w-full bg-white p-3 fixed bottom-0 right-0">
               <button
+                type="button"
                 className=" w-full py-3 bg-black text-white "
                 onClick={onSubmit}
               >
