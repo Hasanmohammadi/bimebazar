@@ -1,3 +1,4 @@
-import Input from "./Input";
+import Input from "./input";
+import BottomSheet from "./bottomSheet";
 
-export { Input };
+export { Input, BottomSheet };

@@ -1,8 +1,9 @@
-import { Input } from "./components/common";
+import { BottomSheet, Input } from "./components/common";
+import { Address } from "./components/pages/information";
 
 export default function Home() {
   return (
-    <main className="w-full">
+    <main className="w-full max-w-md">
       <div className="mt-8 px-5">
         <p className="font-normal text-base">
           لطفا اطلاعات شخصی مالک خودرو را وارد کنید:
@@ -27,9 +28,7 @@ export default function Home() {
             </p>
           </div>
         </div>
-        <button className="w-full py-3 font-semibold text-base mt-9 bg-primary">
-          انتخاب از آدرس‌های من
-        </button>
+        <Address />
       </div>
     </main>
   );
