@@ -1,5 +1,4 @@
 "use client";
-import React, { Dispatch, SetStateAction, useState } from "react";
 
 interface BottomSheetPropsI {
   open: boolean;

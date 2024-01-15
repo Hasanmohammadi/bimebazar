@@ -87,7 +87,7 @@ export default function Address() {
             ))}
           </div>
           {isOpen && (
-            <div className="w-full bg-white p-3 fixed bottom-0 right-0">
+            <div className="w-full bg-white p-3 fixed bottom-0 right-0 max-w-96 left-0 m-auto">
               <button
                 type="button"
                 className=" w-full py-3 bg-black text-white "

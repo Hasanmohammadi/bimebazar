@@ -9,7 +9,13 @@ export interface AddressDataI {
 
 interface AddressContextType {
   address: AddressDataI;
-  setAddress: (newAddress: AddressDataI) => void;
+  setAddress: (address: AddressDataI) => void;
+  phoneNumber: string;
+  setPhoneNumber: (phoneNumber: string) => void;
+  nationalId: string;
+  setNationalId: (nationalId: string) => void;
+  infoStatus: "fail" | "success" | null;
+  setInfoStatus: (infoStatus: "fail" | "success" | null) => void;
 }
 
 const AppContext = createContext<AddressContextType>({
@@ -19,6 +25,12 @@ const AppContext = createContext<AddressContextType>({
     name: "",
   },
   setAddress: (newAddress: AddressDataI) => {},
+  phoneNumber: "",
+  setPhoneNumber: (phoneNumber: string) => {},
+  nationalId: "",
+  setNationalId: (nationalId: string) => {},
+  infoStatus: null,
+  setInfoStatus: (infoStatus: "fail" | "success" | null) => {},
 });
 
 export const AppProvider = ({ children }: { children: React.ReactElement }) => {
@@ -28,9 +40,19 @@ export const AppProvider = ({ children }: { children: React.ReactElement }) => {
     name: "",
   });
 
+  const [nationalId, setNationalId] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [infoStatus, setInfoStatus] = useState<"fail" | "success" | null>(null);
+
   const contextValue: AddressContextType = {
     address,
     setAddress,
+    phoneNumber,
+    setPhoneNumber,
+    nationalId,
+    setNationalId,
+    infoStatus,
+    setInfoStatus,
   };
 
   return (

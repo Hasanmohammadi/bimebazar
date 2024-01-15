@@ -1,42 +1,81 @@
 "use client";
+import postAddress from "@/services/postOrder";
 import { Input } from "./components/common";
 import { Address } from "./components/pages/information";
 
 import validationNationalCode from "@/validation/nationalId";
 import validationPhoneNumber from "@/validation/phoneNumber";
 
-import { SetStateAction, useState } from "react";
+import { useAppContext } from "@/context/AppContext";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
-  const [input1, setInput1] = useState("");
-  const [input2, setInput2] = useState("");
-  const [error, setError] = useState({ nationalId: false, phoneNumber: false });
+  const {
+    address,
+    nationalId,
+    phoneNumber,
+    setNationalId,
+    setPhoneNumber,
+    setInfoStatus,
+  } = useAppContext();
 
+  const [error, setError] = useState({
+    nationalId: false,
+    phoneNumber: false,
+    addressId: false,
+  });
+
+  const router = useRouter();
   const handleInputChange = (
     event: { target: { value: any } },
     setInput: {
-      (value: SetStateAction<string>): void;
-      (value: SetStateAction<string>): void;
+      (nationalId: string): void;
+      (phoneNumber: string): void;
     }
   ) => {
     setInput(event.target.value);
   };
 
-  const onSubmit = () => {
-    if (!validationNationalCode(input1)) {
-      setError((pre) => ({ ...pre, nationalId: true }));
-    } else {
-      setError((pre) => ({ ...pre, nationalId: false }));
-    }
-    if (!validationPhoneNumber(input2)) {
-      setError((pre) => ({ ...pre, phoneNumber: true }));
-    } else {
-      setError((pre) => ({ ...pre, phoneNumber: false }));
+  const post = async () => {
+    if (!error.nationalId && !error.phoneNumber && !error.addressId) {
+      try {
+        await postAddress(
+          {
+            addressId: address.id,
+            nationalId,
+            phoneNumber,
+          },
+          router,
+          setInfoStatus
+        );
+      } catch (error: any) {
+        console.error("Error posting address:", error.message);
+      }
     }
   };
 
+  const validateAndSetError = (
+    field: string,
+    value: string,
+    validationFunction: (value: string) => boolean
+  ) => {
+    setError((prevErrors) => ({
+      ...prevErrors,
+      [field]: !validationFunction(value),
+    }));
+  };
+
+  const onSubmit = async () => {
+    validateAndSetError("nationalId", nationalId, validationNationalCode);
+    validateAndSetError("phoneNumber", phoneNumber, validationPhoneNumber);
+    validateAndSetError("addressId", address.id, () => !!address.id);
+
+    post();
+  };
+
   return (
-    <main className="w-full max-w-md h-screen">
+    <main className="w-full max-w-md h-screen m-auto">
       <div className="mt-8 px-5">
         <p className="font-normal text-base">
           لطفا اطلاعات شخصی مالک خودرو را وارد کنید:
@@ -51,8 +90,8 @@ export default function Home() {
             placeholder="کد ملی"
             type="number"
             name="nationalId"
-            onChange={(e) => handleInputChange(e, setInput1)}
-            value={input1}
+            onChange={(e) => handleInputChange(e, setNationalId)}
+            value={nationalId}
           />
           {error.nationalId && (
             <span className="text-red-500">کدملی وارد شده معتبر نیست</span>
@@ -66,8 +105,8 @@ export default function Home() {
             placeholder="شماره تلفن همراه"
             type="number"
             name="phoneNumber"
-            onChange={(e) => handleInputChange(e, setInput2)}
-            value={input2}
+            onChange={(e) => handleInputChange(e, setPhoneNumber)}
+            value={phoneNumber}
           />
           {error.phoneNumber && (
             <span className="text-red-500">
@@ -76,6 +115,9 @@ export default function Home() {
           )}
         </div>
         <Address />
+        {error.addressId && (
+          <span className="text-red-500">لطفا آدرس را انتخاب کنید</span>
+        )}
         <button
           type="submit"
           className="px-8 py-3 bg-black text-white absolute bottom-8 left-4 "
