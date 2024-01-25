@@ -1,4 +1,5 @@
-import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
+import { URLS } from "@/constants/Url";
+import axios from "axios";
 
 interface SaveOrderRequest {
   nationalId: string;
@@ -6,29 +7,26 @@ interface SaveOrderRequest {
   addressId: string;
 }
 
-const postAddress = async (
-  order: SaveOrderRequest,
-  router: AppRouterInstance,
-  setInfoStatus: (infoStatus: "fail" | "success" | null) => void
-): Promise<void> => {
-  try {
-    const response = await fetch(
-      "https://front-end-task.bmbzr.ir/order/completion/",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(order),
-      }
-    );
+interface PostAddressArgsI {
+  order: SaveOrderRequest;
+  onSuccess: () => void;
+  onFailed: ({ status }: { status: number }) => void;
+}
 
-    if (response.ok) {
-      setInfoStatus("success");
-      router.push("/result");
+const postAddress = async ({
+  order,
+  onSuccess,
+  onFailed,
+}: PostAddressArgsI): Promise<void> => {
+  try {
+    const response = await axios.post(URLS.POST_ORDER, order, {
+      withCredentials: true,
+    });
+
+    if (response.status === 200) {
+      onSuccess();
     } else {
-      setInfoStatus("fail");
-      alert(`Has error ${response.status}`);
+      onFailed({ status: response.status });
     }
   } catch (error: any) {
     console.error("Error posting data:", error.message);

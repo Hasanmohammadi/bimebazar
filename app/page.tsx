@@ -1,5 +1,5 @@
 "use client";
-import postAddress from "@/services/postOrder";
+import saveOrderInformation from "@/services/postOrder";
 import { Input } from "./components/common";
 import { Address } from "./components/pages/information";
 
@@ -40,15 +40,21 @@ export default function Home() {
   const post = async () => {
     if (!error.nationalId && !error.phoneNumber && !error.addressId) {
       try {
-        await postAddress(
-          {
+        await saveOrderInformation({
+          order: {
             addressId: address.id,
             nationalId,
             phoneNumber,
           },
-          router,
-          setInfoStatus
-        );
+          onSuccess: () => {
+            router.push("/result");
+            setInfoStatus("success");
+          },
+          onFailed: ({ status }) => {
+            setInfoStatus("fail");
+            alert(`Has error ${status}`);
+          },
+        });
       } catch (error: any) {
         console.error("Error posting address:", error.message);
       }
@@ -75,7 +81,7 @@ export default function Home() {
   };
 
   return (
-    <main className="w-full max-w-md h-screen m-auto">
+    <main className="w-full max-w-md h-screen m-auto -z-0">
       <div className="mt-8 px-5">
         <p className="font-normal text-base">
           لطفا اطلاعات شخصی مالک خودرو را وارد کنید:

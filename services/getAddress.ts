@@ -1,18 +1,20 @@
-const getAddress = async () => {
-  try {
-    const response = await fetch(
-      "https://front-end-task.bmbzr.ir/my-addresses"
-    );
-    if (!response.ok) {
-      throw new Error("Failed to fetch data");
-    }
+import { URLS } from "@/constants/Url";
+import axios from "axios";
 
-    const data = await response.json();
-    return data;
-  } catch (error: any) {
-    console.error("Error fetching data:", error.message);
+const getMyAddresses = async () => {
+  const requestOptions = {
+    method: "GET",
+    withCredentials: true,
+    redirect: "follow",
+  };
+
+  try {
+    const response = await axios.get(URLS.GET_ADDRESS, requestOptions);
+    return response.data;
+  } catch (error) {
+    console.error("Error getting addresses:", error);
     throw error;
   }
 };
 
-export default getAddress;
+export default getMyAddresses;
